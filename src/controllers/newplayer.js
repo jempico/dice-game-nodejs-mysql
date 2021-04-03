@@ -1,4 +1,4 @@
-const express= require('express');
+/*const express= require('express');
 const mongoose = require('mongoose');
 const Player = require('../models/Player');
 const bcrypt = require('bcrypt');
@@ -21,5 +21,5 @@ exports.newplayer = (req,res) => {
     //>To compare passwords:
     //console.log(bcrypt.compareSync(req.body.newData.password, hash));
   }
-
+*/
 

@@ -1,4 +1,4 @@
-const express= require('express');
+/*const express= require('express');
 const mongoose = require('mongoose');
 const Player = require('../models/Player');
 const sendResponse = require('../services/response');
@@ -10,3 +10,4 @@ exports.deleteplayer=(req,res)=>{
       (err,data)=>{ sendResponse(res, err, data)}
     )
   }
+*/
