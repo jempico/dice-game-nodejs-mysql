@@ -5,7 +5,8 @@ const sendResponse = require('../services/response')
 
 //READ PLAYER BY ID
 exports.player = (req,res)=>{
-    Player.findById(req.params.id,(err,data)=>{
+    const { id } = req.params;  
+    Player.findById(id,(err,data)=>{
       sendResponse(res, err, data);
     })
   }

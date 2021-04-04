@@ -19,10 +19,9 @@ app.use(express.json());
 // Middlewares
 //app.use('/players', playersRoute);
 
-
+//Get all players
 app.get('/players', (req,res)=> {
-    console.log('Im here')
-    mysqlConnection.query('SELECT * FROM players', function(err, results, fields){
+    mysqlConnection.query('SELECT * FROM players', function(err, results){
         if (err){
             res.json({
               success: false,
@@ -42,6 +41,35 @@ app.get('/players', (req,res)=> {
     })
 })
 
+app.get('/players/:id', (req, res) => {
+    const {id} = req.params;
+    mysqlConnection.query('SELECT * FROM players WHERE id = ?', [id], (err, results) => {
+        res.json({
+            success: true,
+            data: results
+        })
+    })
+})
+
+app.post('/players', (req, res)=>{
+    const {name} = req.body.newData;
+    const query = 'CALL addEmployee(?)' 
+    const query2 = 'CALL readPlayer(?)'
+    mysqlConnection.query(query, [name], (err, rows, fields) =>{
+        if(!err) {
+            res.json({
+                success: true,
+                text: 'Employee saved',
+            })
+        } else {
+            res.json({
+                success: true,
+                text: 'Error found',
+                error: err
+            })
+        }
+    })
+})
 // Starting the server
 app.listen(PORT, ()=>{
 	console.log(`server is listening on port:${PORT}`)
