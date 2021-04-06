@@ -1,4 +1,4 @@
-const express = require('express');
+/*const express = require('express');
 const router = express.Router();
 const newplayer = require('../controllers/newplayer');
 const player = require('../controllers/singleplayer');
@@ -22,4 +22,4 @@ router
     //ADD GAME
     .post(addgame.addgame)
 
-module.exports = router;
+module.exports = router;*/

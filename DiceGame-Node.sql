@@ -11,7 +11,10 @@ CREATE TABLE player (
 		DEFAULT CURRENT_TIMESTAMP, 
     name VARCHAR(60) NULL UNIQUE,
     email VARCHAR(60) NOT NULL,
-    password VARCHAR(60)
+    password VARCHAR(60),
+    games INT,
+    wins INT,
+    successRate FLOAT
 );
 
 CREATE TABLE game (
@@ -36,13 +39,20 @@ INSERT INTO player (email, password) VALUES ('anonim1@gmail.com', 'password');
 CALL setNameIfNull('anonim1@gmail.com');
 SELECT * FROM player;
 
--- INSERTING GAMES AND SETTING UP RESULT IN RECENTLY CREATED USER 
-INSERT INTO game (id_player, dice1, dice2) VALUES (5, 1, 1);
-CALL setResult;
+-- INSERTING GAMES, SETTING UP RESULT AND UPDATING SUCCESS RATE IN RECENTLY CREATED USER 
+INSERT INTO game (id_player, dice1, dice2) VALUES (1, 1, 1);
+CALL setResult(1);
 
-INSERT INTO game (id_player, dice1, dice2) VALUES (5, 7, 7);
-CALL setResult;
+SELECT * FROM player;
+CALL setSuccessRate(1, (SELECT wins FROM player WHERE id=1), (SELECT games FROM player WHERE id=1));
 
+
+INSERT INTO game (id_player, dice1, dice2) VALUES (1, 7, 7);
+CALL setResult(1);
+
+-- READING GAMES from a user
+
+CALL readGames(1);
 
 -- INSERTING ONE USER WITH NAME
 
@@ -58,3 +68,7 @@ CALL setResult;
 
 DELETE FROM game WHERE id=10;
 
+ALTER TABLE player
+ADD wins INT;
+
+SELECT * FROM player;
