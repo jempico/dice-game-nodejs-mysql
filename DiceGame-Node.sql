@@ -32,19 +32,29 @@ DESCRIBE game;
 
 -- INSERTING ONE USER WITHOUT NAME
 
-INSERT INTO player (email, password) VALUES ('anonim3@gmail.com', 'password');
-CALL setNameIfNull('anonim3@gmail.com');
+INSERT INTO player (email, password) VALUES ('anonim1@gmail.com', 'password');
+CALL setNameIfNull('anonim1@gmail.com');
+SELECT * FROM player;
 
--- INSERTING GAMES IN RECENTLY CREATED USER 
-INSERT INTO game (id_player, dice1, dice2, result) VALUES (1, 3, 7, 'LOST'), (1, 5, 5, 'LOST');
+-- INSERTING GAMES AND SETTING UP RESULT IN RECENTLY CREATED USER 
+INSERT INTO game (id_player, dice1, dice2) VALUES (5, 1, 1);
+CALL setResult;
+
+INSERT INTO game (id_player, dice1, dice2) VALUES (5, 7, 7);
+CALL setResult;
+
 
 -- INSERTING ONE USER WITH NAME
 
 INSERT INTO player (name, email, password) VALUES ('Sandra', 'sandra@gmail.com', 'password');
 CALL setNameIfNull('sandra@gmail.com');
 
--- INSERTING GAMES IN RECENTLY CREATED USER 
-INSERT INTO game (id_player, dice1, dice2, result) VALUES (2, 3, 7, 'LOST'), (2, 5, 5, 'WIN');
+-- INSERTING GAMES AND SETTING UP RESULT IN RECENTLY CREATED USER 
 
-SELECT * FROM player;
+INSERT INTO game (id_player, dice1, dice2) VALUES (2, 7, 5);
+CALL setResult;
+
+-- DELETING GAMES BY PLAYER ID
+
+DELETE FROM game WHERE id=10;
 
