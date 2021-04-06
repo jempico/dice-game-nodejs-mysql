@@ -98,7 +98,27 @@ app.delete('/players/:id', (req,res)=>{
     })
 })
 
-
+app.post('/players/:id/games', (req, res) =>{
+    const {id} = req.params;
+    const {dice1} = req.body.newData;
+    const {dice2} = req.body.newData;
+    let query = 'INSERT INTO game (id_player, dice1, dice2) VALUES (?, ?, ?)';
+    mysqlConnection.query(query, [id, dice1, dice2], (err, rows, fields) => {
+        if(!err) {
+            res.json({
+                success: true,
+                text: 'Game saved',
+                game: fields
+            })
+        } else {
+            res.json({
+                success: true,
+                text: 'Error found',
+                error: err
+            })
+        }
+    })
+})
 
 // Starting the server
 app.listen(PORT, ()=>{
