@@ -11,7 +11,7 @@ CREATE TABLE player (
 		DEFAULT CURRENT_TIMESTAMP, 
     name VARCHAR(60) NULL UNIQUE,
     email VARCHAR(60) NOT NULL,
-    password VARCHAR(60),
+    password VARCHAR(60) NOT NULL,
     games INT,
     wins INT,
     successRate FLOAT

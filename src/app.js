@@ -1,10 +1,12 @@
 //******** THINGS TODO ********/
-//-1 Cambiar callback por async/await.
+//-0 Optimizar query Average Success
+//-1 Testing Errors
+//-2 Cambiar callback por async/await.
     //Ref: https://www.youtube.com/watch?v=vjf774RKrLc&ab_channel=DevEd
-//-2 estructura
+//-2 Cambiar stored procedures
 //-3 Postman Tests
-//-4 eslint
 
+const uniqid = require('uniqid');
 const express= require('express');
 const app= express();
 const PORT = process.env.PORT || 3000
@@ -18,6 +20,7 @@ app.use(express.json());
 
 // Middlewares
 //app.use('/players', playersRoute);
+
 
 //Get all players
 app.get('/players', (req,res)=> {
@@ -41,7 +44,7 @@ app.get('/players', (req,res)=> {
     })
 })
 
-/*app.get('/players/:id', (req, res) => {
+app.get('/players/:id', (req, res) => {
     const {id} = req.params;
     mysqlConnection.query('SELECT * FROM player WHERE id = ?', [id], (err, results) => {
         res.json({
@@ -49,13 +52,19 @@ app.get('/players', (req,res)=> {
             data: results
         })
     })
-})*/
-/*
+})
+
 app.post('/players', (req, res)=>{
-    const {name} = req.body.newData;
-    const query = 'CALL addEmployee(?)' 
-    const query2 = 'CALL readPlayer(?)'
-    mysqlConnection.query(query, [name], (err, rows, fields) =>{
+    let {name} = req.body.newData;
+    let {email} = req.body.newData;
+    let {password} = req.body.newData;
+    
+    //Checking if name is null or empty
+    if (name == null || name == '') {
+        console.log('null name');
+        name = uniqid('ANONIM-');
+    } 
+    mysqlConnection.query('INSERT INTO player (name, email, password) VALUES (?, ?, ?)', [name, email, password], (err, rows, fields) =>{
         if(!err) {
             res.json({
                 success: true,
@@ -69,7 +78,27 @@ app.post('/players', (req, res)=>{
             })
         }
     })
-})*/
+    
+})
+
+app.delete('/players/:id', (req,res)=>{
+    const {id} = req.params;
+    mysqlConnection.query('DELETE FROM player WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            res.json({
+            success: false,
+            error: err
+            })
+        } else {
+        res.json({
+            success: true,
+            text: 'User successfully deleted'   
+        })
+        }
+    })
+})
+
+
 
 // Starting the server
 app.listen(PORT, ()=>{
