@@ -20,7 +20,7 @@ const addPlayer = (req, res)=>{
     // } 
 
 
-    return newPlayer(player)
+    return newPlayer.newPlayer(player)
         .then((res) => res.json({
             success: true,
             text: 'Employee saved',
