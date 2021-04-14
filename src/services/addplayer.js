@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const uniqid = require('uniqid');
 const newPlayer = require('../models/player');
 
+
 // CREATE NEW PLAYER
 const addPlayer = (req, res)=>{
     const player = ({name , email ,password} = req.body.newData)
@@ -28,6 +29,7 @@ const addPlayer = (req, res)=>{
 };
 
 module.exports = addPlayer;
+
 
 //     XXX.query('INSERT INTO player (name, email, password) VALUES (?, ?, ?)', [name, email, hash], (err, rows, fields) =>{
 //         if(!err) {
