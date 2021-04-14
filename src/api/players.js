@@ -8,7 +8,7 @@ const addPlayer = require('../services/addPlayer');
 
 router
     .route("/")
-    .post(addPlayer.addPlayer)
+    .post(addPlayer)
 
 
 module.exports = router;

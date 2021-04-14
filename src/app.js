@@ -7,7 +7,7 @@ app.use(express.json());
 dotenv.config();
 
 // Routes
-const playersRoute = require('./api/controllers')
+const playersRoute = require('./api/players')
 
 // Middlewares
 app.use('/players', playersRoute);
