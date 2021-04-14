@@ -14,27 +14,6 @@ app.use('/players', playersRoute);
 
 
 /*
-//Get all players
-app.get('/players', (req,res)=> {
-    mysqlConnection.query('SELECT * FROM player', function(err, results){
-        if (err){
-            res.json({
-              success: false,
-              message: err
-            })
-          } else if (!results){
-            res.json({
-              success: false,
-              message: "Not Found"
-            })
-          } else {
-            res.json({
-                success: true,
-                data: results 
-            })
-          }
-    })
-})
 
 app.get('/players/:id', (req, res) => {
     const {id} = req.params;
