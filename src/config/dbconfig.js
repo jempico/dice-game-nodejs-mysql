@@ -5,6 +5,9 @@ const knex = require('knex');
 // updating env vars before.
 const db = knex(knexfile.development);
 
+module.exports = db;
+
+
 // ({
 //     client: 'mysql2',
 //     connection: {
@@ -16,7 +19,6 @@ const db = knex(knexfile.development);
 //     pool: {min: 0, max:10},
 //   });
 
-module.exports = db;
 
 
 // const mysql2 = require('mysql2');

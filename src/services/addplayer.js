@@ -1,4 +1,4 @@
-const Player = require('../models/Player');
+const Player = require('../models/player');
 const bcrypt = require('bcrypt');
 const uniqid = require('uniqid');
 const playerModel = require('../models/player');
@@ -6,19 +6,24 @@ const playerModel = require('../models/player');
 
 // CREATE NEW PLAYER
 const addPlayer = (req, res)=>{
-    const player = ({name , email ,password} = req.body.newData)
-
+    const playerDTO = ({name , email ,password} = req.body.newData)
+    
     //Hashing password
-    player.password = bcrypt.hashSync(password, 10);
+    playerDTO.password = bcrypt.hashSync(password, 10);
     //To compare passwords:
     //console.log(bcrypt.compareSync(password, hash));
 
     //Checking if name is null or empty
     if (name == null || name == '') {
-        player.name = uniqid('ANONIM-');
+        playerDTO.name = uniqid('ANONIM-');
     } 
 
-    let result = playerModel.addPlayer( player,
+    //Creating an instance of Player through playerFactory
+    const newPlayer = playerModel.playerFactory(playerDTO);
+
+    //Adding new player into DB through data access layer
+
+    let result = playerModel.addPlayer( newPlayer,
         (response) => {
             res.json({
                 success: true,
@@ -31,7 +36,7 @@ const addPlayer = (req, res)=>{
                 err: reject
             })
         })
-    
+
 };
 
 module.exports = addPlayer;
