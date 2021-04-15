@@ -1,7 +1,6 @@
-const Player = require('../models/player');
 const bcrypt = require('bcrypt');
 const uniqid = require('uniqid');
-const playerModel = require('../models/player');
+const player = require('../models/player');
 
 
 // CREATE NEW PLAYER
@@ -19,11 +18,11 @@ const addPlayer = (req, res)=>{
     } 
 
     //Creating an instance of Player through playerFactory
-    const newPlayer = playerModel.playerFactory(playerDTO);
+    const newPlayer = player.playerFactory(playerDTO);
 
     //Adding new player into DB through data access layer
 
-    let result = playerModel.addPlayer( newPlayer,
+    let result = player.addPlayer( newPlayer,
         (response) => {
             res.json({
                 success: true,

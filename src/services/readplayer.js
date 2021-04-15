@@ -1,9 +1,9 @@
-const playerModel = require('../models/player');
+const player = require('../models/player');
 
 // READ ONE PLAYER
 const readPlayer = (req, res) => {
     const {id} = req.params;
-    let result = playerModel.getPlayer(id,  
+    let result = player.getPlayer(id,  
         (response) => {
             if (response.length == 0){
                 res.json({
