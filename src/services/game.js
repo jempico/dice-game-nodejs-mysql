@@ -10,8 +10,8 @@ const addGame = (req, res)=>{
     const newGame = game.gameFactory(id);
     //Running game
     newGame.runGame();
-    //Setting up result
-    newGame.setResult();
+    //Setting up score
+    newGame.setScore();
 
     let result = game.addGame( newGame,
         (response) => {
@@ -27,6 +27,7 @@ const addGame = (req, res)=>{
                 err: reject
             })
         })
+    
     
     //Settinp up player's SuccessRate
     player.setSuccess(id,

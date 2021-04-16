@@ -7,6 +7,7 @@ class Game {
       this.id_player = id;
       this.dice1 = '';
       this.dice2 = '';
+      this.score = 0;
       this.result = '';
    }
    //Where should I put the range of numbers for the random Generator?
@@ -14,12 +15,14 @@ class Game {
       this.dice1 = randomizer();
       this.dice2 = randomizer();
    }
-   setResult(){
+   setScore(){
       let sumNum = this.dice1 + this.dice2;
       if (sumNum == 7) {
-      this.result = 'WIN';
+      this.score = 1;
+      this.result= 'WIN'
       } else if (sumNum !== 7) {
-      this.result = 'LOST';        
+      this.score = 0;  
+      this.result= 'LOST'
       } else {
          return `Something went wrong`;
       }
@@ -35,7 +38,7 @@ const addGame = (obj, response, reject)=>{
 } 
 
 const getGames = (id, response, reject) => {
-   db.select('*').from('game').where('id_player', id)
+   db.select('id as round', 'dice1', 'dice2', 'result').from('game').where('id_player', id)
   .then( function(rows) { return response(rows) })
   .catch( function(error) { return reject(error)})
 }

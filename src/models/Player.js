@@ -18,7 +18,7 @@ const addPlayer = (obj, response, reject)=>{
    .catch( (error) => reject(error))
 } 
 const getPlayer = (id, response, reject) => {
-   db.select('*').from('player').where('id', id)
+   db.select('name', 'email', 'successRate').from('player').where('id', id)
   .then( (rows) =>  response(rows) )
   .catch( (error) => reject(error) )
 }
@@ -34,8 +34,9 @@ const editName = (obj, response, reject) => {
 }
 
 const setSuccess = (id, response, reject) => {
-   db('player').where('id', id).update({successRate: 10})
-   .then( function(rows) { return response(rows) })
+let scoreRate = db('game').avg('score')
+   db('player').where('id', id).update({successRate: scoreRate})
+   .then( function(rows) {    return response(rows) })
    .catch( function(error) { return reject(error)})
 }
 module.exports = {playerFactory, addPlayer, getPlayer, getPlayers, editName, setSuccess};
