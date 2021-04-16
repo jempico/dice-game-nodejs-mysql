@@ -1,10 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const addPlayer = require('../../services/addplayer');
-const readPlayers = require('../../services/readplayers');
-const readPlayer = require('../../services/readplayer');
-const editPlayer = require('../../services/editplayer')
-const addGame = require('../../services/addgame')
+const player = require('../../services/player');
+const game = require('../../services/game')
 
 //const player = require('../controllers/singleplayer');
 //const updateplayer = require('../controllers/updateplayer');
@@ -13,16 +10,16 @@ const addGame = require('../../services/addgame')
 
 router
     .route("/")
-    .get(readPlayers)
-    .post(addPlayer)
-    .put(editPlayer)
+    .get(player.readPlayers)
+    .post(player.addPlayer)
+    .put(player.editPlayer)
 
 router
     .route("/:id")
-    .get(readPlayer)
+    .get(player.readPlayer)
 
     router
     .route("/:id/games")
-    .post(addGame)
+    .post(game.addGame)
 
 module.exports = router;

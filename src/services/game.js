@@ -1,16 +1,13 @@
 const game = require('../models/game');
 
 // ADD NEW GAME
+
 const addGame = (req, res)=>{
     const {id} = req.params;
-
     //Creating an instance of Game through gameFactory
     const newGame = game.gameFactory(parseInt(id));
-    console.log(newGame);
-
     //Running game
     newGame.runGame();
-
     //Setting up result
     newGame.setResult();
 
@@ -28,7 +25,8 @@ const addGame = (req, res)=>{
                 err: reject
             })
         })
-
 };
 
-module.exports = addGame;
+const readGame = () => console.log('it works');
+
+module.exports = {addGame, readGame};

@@ -27,8 +27,7 @@ const getPlayers = (response, reject) => {
   .catch( function(error) { return reject(error)})
 }
 const editName = (obj, response, reject) => {
-   //db('player').where('id', '=', id).update({name: 'Pipi' })
-   console.log('Im here' + obj)
+   db('player').where('name', '=', obj.name).update({name: obj.newName })
    .then( function(rows) { return response(rows) })
    .catch( function(error) { return reject(error)})
 }
