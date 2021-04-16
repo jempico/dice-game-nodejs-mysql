@@ -18,8 +18,10 @@ router
     .route("/:id")
     .get(player.readPlayer)
 
-    router
+router
     .route("/:id/games")
     .post(game.addGame)
+    .get(game.readGames)
+    .delete(game.deleteGames)
 
 module.exports = router;

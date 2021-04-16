@@ -5,7 +5,8 @@ class Player {
    constructor(obj) {
       this.name = obj.name;
       this.email = obj.email;
-      this.password = obj.password
+      this.password = obj.password;
+      this.successRate = 0;
    }
 }
 
@@ -31,4 +32,10 @@ const editName = (obj, response, reject) => {
    .then( function(rows) { return response(rows) })
    .catch( function(error) { return reject(error)})
 }
-module.exports = {playerFactory, addPlayer, getPlayer, getPlayers, editName};
+
+const setSuccess = (id, response, reject) => {
+   db('player').where('id', id).update({successRate: 10})
+   .then( function(rows) { return response(rows) })
+   .catch( function(error) { return reject(error)})
+}
+module.exports = {playerFactory, addPlayer, getPlayer, getPlayers, editName, setSuccess};

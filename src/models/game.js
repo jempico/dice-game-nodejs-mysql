@@ -34,4 +34,16 @@ const addGame = (obj, response, reject)=>{
    .catch( (error) => reject(error))
 } 
 
-module.exports = {gameFactory, addGame};
+const getGames = (id, response, reject) => {
+   db.select('*').from('game').where('id_player', id)
+  .then( function(rows) { return response(rows) })
+  .catch( function(error) { return reject(error)})
+}
+
+const removeGames = (id, response, reject) => {
+   db('game').where({'id_player': id}).del()
+  .then( function(rows) { return response(rows) })
+  .catch( function(error) { return reject(error)})
+}
+
+module.exports = {gameFactory, addGame, getGames, removeGames};

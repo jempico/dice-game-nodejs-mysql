@@ -1,11 +1,13 @@
 const game = require('../models/game');
-
+const player = require('../models/player');
 // ADD NEW GAME
 
 const addGame = (req, res)=>{
     const {id} = req.params;
+     
+    console.log(id);
     //Creating an instance of Game through gameFactory
-    const newGame = game.gameFactory(parseInt(id));
+    const newGame = game.gameFactory(id);
     //Running game
     newGame.runGame();
     //Setting up result
@@ -25,8 +27,66 @@ const addGame = (req, res)=>{
                 err: reject
             })
         })
+    
+    //Settinp up player's SuccessRate
+    player.setSuccess(id,
+        (response) => {
+            res.json({
+                success: true,
+                text: `Game succesfully created and success rate updated`
+            })
+        },     
+        (reject) => {
+            res.json({
+                success: false,
+                err: reject
+            })
+        })
 };
 
-const readGame = () => console.log('it works');
 
-module.exports = {addGame, readGame};
+const readGames = (req, res) => {
+    const {id} = req.params;
+    let result = game.getGames(id, 
+        (response) => {
+            if (response.length == 0){
+                res.json({
+                    success: false,
+                    data: `this user hasn't played yet!`
+                })
+            } else {
+                res.json({
+                    success: true,
+                    data: response
+                })                
+            }
+        },     
+        (reject) => {
+            res.json({
+                success: false,
+                err: reject
+            })
+        })
+}
+
+//DELETE GAME
+const deleteGames = (req, res)=>{
+    const {id} = req.params;
+    
+    //Removing games through data access layer
+    let result = game.removeGames(id,
+        (response) => {
+            res.json({
+                success: true,
+                text: `Games succesfully removed`
+            })
+        },     
+        (reject) => {
+            res.json({
+                success: false,
+                err: reject
+            })
+        })
+};
+
+module.exports = {addGame, readGames, deleteGames};
