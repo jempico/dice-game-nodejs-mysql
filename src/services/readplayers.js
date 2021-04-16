@@ -1,8 +1,8 @@
-const playerModel = require('../models/player');
+const player = require('../models/player');
 
 // READ PLAYERS
 const readPlayers = (req, res) => {
-        let result = playerModel.getPlayers( 
+        let result = player.getPlayers( 
             (response) => {
                 res.json({
                     success: true,

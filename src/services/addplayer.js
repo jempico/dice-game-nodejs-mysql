@@ -22,7 +22,7 @@ const addPlayer = (req, res)=>{
 
     //Adding new player into DB through data access layer
 
-    let result = player.addPlayer( newPlayer,
+    let result = newPlayer.addPlayer( newPlayer,
         (response) => {
             res.json({
                 success: true,
