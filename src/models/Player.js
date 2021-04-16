@@ -7,23 +7,29 @@ class Player {
       this.email = obj.email;
       this.password = obj.password
    }
-   addPlayer(obj, response, reject){
-      db('player').insert(obj)
-      .then( (rows) =>  response(rows) )
-      .catch( (error) => reject(error))
-   } 
-   getPlayer(id, response, reject){
-      db.select('*').from('player').where('id', id)
-     .then( (rows) =>  response(rows) )
-     .catch( (error) => reject(error) )
-   }
-   getPlayers(response, reject){
-      db.select('*').from('player')
-     .then( function(rows) { return response(rows) })
-     .catch( function(error) { return reject(error)})
-  }
 }
 
 const playerFactory = (obj) => { return new Player(obj) };
 
-module.exports = {playerFactory};
+const addPlayer = (obj, response, reject)=>{
+   db('player').insert(obj)
+   .then( (rows) =>  response(rows) )
+   .catch( (error) => reject(error))
+} 
+const getPlayer = (id, response, reject) => {
+   db.select('*').from('player').where('id', id)
+  .then( (rows) =>  response(rows) )
+  .catch( (error) => reject(error) )
+}
+const getPlayers = (response, reject) => {
+   db.select('*').from('player')
+  .then( function(rows) { return response(rows) })
+  .catch( function(error) { return reject(error)})
+}
+const editName = (obj, response, reject) => {
+   //db('player').where('id', '=', id).update({name: 'Pipi' })
+   console.log('Im here' + obj)
+   .then( function(rows) { return response(rows) })
+   .catch( function(error) { return reject(error)})
+}
+module.exports = {playerFactory, addPlayer, getPlayer, getPlayers, editName};

@@ -15,18 +15,6 @@ app.use('/players', playersRoute);
 
 /*
 
-app.get('/players/:id', (req, res) => {
-    const {id} = req.params;
-    mysqlConnection.query('SELECT * FROM player WHERE id = ?', [id], (err, results) => {
-        res.json({
-            success: true,
-            data: results
-        })
-    })
-})
-
-
-
 app.delete('/players/:id', (req,res)=>{
     const {id} = req.params;
     mysqlConnection.query('DELETE FROM player WHERE id = ?', [id], (err, results) => {
