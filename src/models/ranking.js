@@ -7,9 +7,10 @@ class Ranking {
         } 
         return Ranking.instance
     }
-    addPlayer(obj, response, reject) {
-        db('ranking').insert(obj)
-        .then( (rows) =>  response(rows) )
+    updateRanking(id, response, reject) {
+        let successDTO = db.select('successRate').from('player').where('id', id)
+        db('ranking').where('id', '=', id).update({successRate: successDTO })
+        .then( (rows) =>  response(rows)) 
         .catch( (error) => reject(error))
     }
     getPlayer(id, response, reject) {

@@ -1,11 +1,11 @@
 const game = require('../models/game');
 const player = require('../models/player');
+const ranking = require('../models/ranking')
 // ADD NEW GAME
 
 const addGame = (req, res)=>{
     const {id} = req.params;
      
-    console.log(id);
     //Creating an instance of Game through gameFactory
     const newGame = game.gameFactory(id);
     //Running game
@@ -43,6 +43,22 @@ const addGame = (req, res)=>{
                 err: reject
             })
         })
+
+
+    //Updating Ranking
+     ranking.updateRanking(id, 
+         (response) => {
+             res.json({
+                 success: true,
+                 text: `Game succesfully created, success rate and ranking updated`
+             })
+         },     
+         (reject) => {
+             res.json({
+                 success: false,
+                 err: reject
+             })
+         })
 };
 
 

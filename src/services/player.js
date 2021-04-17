@@ -40,6 +40,8 @@ const readPlayer = (req, res) => {
                     success: false,
                     data: 'this user does not exist'
                 })
+                console.log(req.params)
+
             } else {
                 res.json({
                     success: true,

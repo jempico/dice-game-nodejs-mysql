@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const player = require('../../services/player');
 const game = require('../../services/game')
+const ranking = require('../../services/ranking')
 
 //const player = require('../controllers/singleplayer');
 //const updateplayer = require('../controllers/updateplayer');
@@ -13,6 +14,9 @@ router
     .get(player.readPlayers)
     .post(player.addPlayer)
     .put(player.editPlayer)
+router    
+    .route("/ranking")
+    .get(ranking.readPlayers)
 
 router
     .route("/:id")
@@ -23,5 +27,7 @@ router
     .post(game.addGame)
     .get(game.readGames)
     .delete(game.deleteGames)
+
+
 
 module.exports = router;
