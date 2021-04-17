@@ -23,7 +23,7 @@ const addPlayer = (req, res)=>{
                 (response) => {
                     res.json({
                         success: true,
-                        text: `user with id ${response} successfully added to Ranking!`
+                        text: `user with id ${response} successfully created and added to Ranking!`
                     })
                 },     
                 (reject) => {

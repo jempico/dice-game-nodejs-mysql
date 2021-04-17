@@ -15,11 +15,30 @@ const addGame = (req, res)=>{
 
     let result = game.addGame( newGame,
         (response) => {
-            res.json({
-                success: true,
-                text: `Game successfully created!`
-            })
-            console.log(response)
+            //Settinp up player's SuccessRate
+            player.setSuccess(id,
+                (response) => {
+                        //Updating Ranking
+                        ranking.updateRanking(id, 
+                            (response) => {
+                                res.json({
+                                    success: true,
+                                    text: `Game succesfully created, success rate and ranking updated`
+                                })
+                            },     
+                            (reject) => {
+                                res.json({
+                                    success: false,
+                                    err: reject
+                                })
+                            })
+                },     
+                (reject) => {
+                    res.json({
+                        success: false,
+                        err: reject
+                    })
+                })
         },     
         (reject) => {
             res.json({
@@ -29,36 +48,10 @@ const addGame = (req, res)=>{
         })
     
     
-    //Settinp up player's SuccessRate
-    player.setSuccess(id,
-        (response) => {
-            res.json({
-                success: true,
-                text: `Game succesfully created and success rate updated`
-            })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
 
 
-    //Updating Ranking
-     ranking.updateRanking(id, 
-         (response) => {
-             res.json({
-                 success: true,
-                 text: `Game succesfully created, success rate and ranking updated`
-             })
-         },     
-         (reject) => {
-             res.json({
-                 success: false,
-                 err: reject
-             })
-         })
+
+
 };
 
 
