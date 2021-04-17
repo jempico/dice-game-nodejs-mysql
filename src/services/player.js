@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const uniqid = require('uniqid');
 const player = require('../models/player');
+const ranking = require('../models/ranking');
 
 
 // CREATE NEW PLAYER
@@ -17,10 +18,20 @@ const addPlayer = (req, res)=>{
     //Adding new player into DB through data access layer
     let result = player.addPlayer( newPlayer,
         (response) => {
-            res.json({
-                success: true,
-                text: `user with id ${response} successfully created!`
-            })
+               //Adding player to ranking
+                ranking.addPlayer(response,
+                (response) => {
+                    res.json({
+                        success: true,
+                        text: `user with id ${response} successfully added to Ranking!`
+                    })
+                },     
+                (reject) => {
+                    res.json({
+                        success: false,
+                        err: reject
+                    })
+                })
         },     
         (reject) => {
             res.json({
@@ -28,6 +39,9 @@ const addPlayer = (req, res)=>{
                 err: reject
             })
         })
+
+    
+
 };
 
 // READ ONE PLAYER
