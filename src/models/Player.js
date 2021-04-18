@@ -34,7 +34,7 @@ const editName = (obj, response, reject) => {
 }
 
 const setSuccess = (id, response, reject) => {
-let scoreRate = db('game').avg('score')
+let scoreRate = db('game').select(db.raw('ROUND(AVG(score),2)')).where({id_player: id}) 
    db('player').where('id', id).update({successRate: scoreRate})
    .then( function(rows) {    return response(rows) })
    .catch( function(error) { return reject(error)})

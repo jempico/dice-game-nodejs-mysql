@@ -10,7 +10,6 @@ class Game {
       this.score = 0;
       this.result = '';
    }
-   //Where should I put the range of numbers for the random Generator?
    runGame(){
       this.dice1 = randomizer();
       this.dice2 = randomizer();
@@ -18,11 +17,11 @@ class Game {
    setScore(){
       let sumNum = this.dice1 + this.dice2;
       if (sumNum == 7) {
-      this.score = 1;
-      this.result= 'WIN'
+         this.score = 1;
+         this.result= 'WIN'
       } else if (sumNum !== 7) {
-      this.score = 0;  
-      this.result= 'LOST'
+         this.score = 0;  
+         this.result= 'LOST'
       } else {
          return `Something went wrong`;
       }

@@ -18,20 +18,30 @@ class Ranking {
         .then( (rows) =>  response(rows)) 
         .catch( (error) => reject(error))
     }
-    getPlayer(id, response, reject) {
-        db.select('*').from('ranking').where('id', id)
+    getLoser(response, reject) {
+        db.select('id_player', 'successRate').from('ranking').where('successRate', '=', 0)
+       .then( function(rows) { return response(rows) })
+       .catch( function(error) { return reject(error)})
+     }
+    getWinner(response, reject) {
+        let maxSuccess = db('ranking').max('successRate');
+        db.select('id_player', 'successRate').from('ranking').where({successRate: maxSuccess})
        .then( function(rows) { return response(rows) })
        .catch( function(error) { return reject(error)})
      }
     getPlayers(response, reject) {
-        db.select('*').from('ranking')
+        db.select('id_player', 'successRate').from('ranking')
+       .then( function(rows) { return response(rows) })
+       .catch( function(error) { return reject(error)})
+    }
+    getTotalAverage(response, reject) {
+         db('ranking').avg('successRate')
        .then( function(rows) { return response(rows) })
        .catch( function(error) { return reject(error)})
     }
 }
 
 const ranking = new Ranking();
-
 Object.freeze(ranking)
 
 module.exports = ranking;

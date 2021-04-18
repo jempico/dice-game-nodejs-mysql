@@ -14,9 +14,19 @@ router
     .get(player.readPlayers)
     .post(player.addPlayer)
     .put(player.editPlayer)
+
 router    
     .route("/ranking")
     .get(ranking.readPlayers)
+
+
+router    
+    .route("/ranking/loser")
+    .get(ranking.readLoser)
+
+router    
+    .route("/ranking/winner")
+    .get(ranking.readWinner)
 
 router
     .route("/:id")

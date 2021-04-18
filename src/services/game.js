@@ -62,7 +62,7 @@ const readGames = (req, res) => {
             if (response.length == 0){
                 res.json({
                     success: false,
-                    data: `this user hasn't played yet!`
+                    data: `this user doesn't have any game record yet!`
                 })
             } else {
                 res.json({
@@ -86,10 +86,30 @@ const deleteGames = (req, res)=>{
     //Removing games through data access layer
     let result = game.removeGames(id,
         (response) => {
-            res.json({
-                success: true,
-                text: `Games succesfully removed`
-            })
+              //Setting back successRate to 0
+              player.setSuccess(id,
+                (response) => {
+                        //Updating Ranking
+                        ranking.updateRanking(id, 
+                            (response) => {
+                                res.json({
+                                    success: true,
+                                    text: `Games succesfully removed, success rate and ranking updated`
+                                })
+                            },     
+                            (reject) => {
+                                res.json({
+                                    success: false,
+                                    err: reject
+                                })
+                            })
+                },     
+                (reject) => {
+                    res.json({
+                        success: false,
+                        err: reject
+                    })
+                })
         },     
         (reject) => {
             res.json({
@@ -97,6 +117,9 @@ const deleteGames = (req, res)=>{
                 err: reject
             })
         })
+
+
+
 };
 
 module.exports = {addGame, readGames, deleteGames};
