@@ -1,4 +1,4 @@
-### A REST API that can create, read, update and delete (CRUD OPERATIONS) a Mysql database.
+A REST API that can create, read, update and delete data (CRUD OPERATIONS) on MySQL.
 
 ## Installation:
 1. Run SQL file (dicegame_restapi.sql) locally. You can use MySQL Workbench for this purpose. This will create a database called "dicegame".
