@@ -5,29 +5,38 @@ class Player {
    constructor(obj) {
       this.name = obj.name;
       this.email = obj.email;
-      this.password = obj.password
+      this.password = obj.password;
+      this.successRate = 0;
    }
 }
 
 const playerFactory = (obj) => { return new Player(obj) };
 
-const addPlayer = (obj, response, reject) => {
+const addPlayer = (obj, response, reject)=>{
    db('player').insert(obj)
-   .then( function(rows) { response(rows) })
-   .catch( function(error) { return reject(error)})
+   .then( (rows) =>  response(rows) )
+   .catch( (error) => reject(error))
 } 
-
 const getPlayer = (id, response, reject) => {
-   db.select('*').from('player').where('id', id)
+   db.select('name', 'email', 'successRate').from('player').where('id', id)
+  .then( (rows) =>  response(rows) )
+  .catch( (error) => reject(error) )
+}
+const getPlayers = (response, reject) => {
+   db.select('*').from('player')
   .then( function(rows) { return response(rows) })
   .catch( function(error) { return reject(error)})
 }
-
-const getPlayers = (response, reject) => {
-    db.select('*').from('player')
+const editName = (obj, response, reject) => {
+   db('player').where('name', '=', obj.name).update({name: obj.newName })
    .then( function(rows) { return response(rows) })
    .catch( function(error) { return reject(error)})
 }
 
-module.exports = Player;
-module.exports = {getPlayers, addPlayer, getPlayer, playerFactory};
+const setSuccess = (id, response, reject) => {
+let scoreRate = db('game').select(db.raw('ROUND(AVG(score),2)')).where({id_player: id}) 
+   db('player').where('id', id).update({successRate: scoreRate})
+   .then( function(rows) {    return response(rows) })
+   .catch( function(error) { return reject(error)})
+}
+module.exports = {playerFactory, addPlayer, getPlayer, getPlayers, editName, setSuccess};
