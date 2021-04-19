@@ -11,6 +11,9 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
      DB_NAME= "dicegame"`
      PORT="3000"
      ``` 
+     
+     
+## Run:
   
 3. Run the program (type 'node app' in your terminal).
 
