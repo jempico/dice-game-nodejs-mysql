@@ -28,6 +28,7 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
             }
     }
     ```
+
         - *Request Body for players without name*
     ```
     {
