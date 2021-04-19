@@ -39,3 +39,29 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
             }
     }
     ```
+
+    - **PUT /players**:
+        reads player by id
+    *Request Body for updating name*
+    ```
+    {
+            "newData":{
+                "name": "currentName",
+                "newName": "newNameToBeChanged"
+            }
+    }
+    ```
+
+    - **POST /players/:id/games**:
+        adds a new game
+
+    - **DELETE /players/:id/games**:
+        removes games from player with requested ID
+
+    - **GET /players/**:
+        reads all players
+
+    - **GET /players/:id**:
+        reads player by id
+
+
