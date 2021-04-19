@@ -14,3 +14,26 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
   
 3. Run the program (type 'node app' in your terminal).
 
+4. Test routes:
+
+    - **POST /players**:
+        adds a new player
+        - *Request Body for players with name*
+    ```
+    {
+            "newData":{
+                "name": "Laia",
+                "email": "laia@gmail.com",
+                "password": "asdfsdGAD"
+            }
+    }
+    ```
+        - *Request Body for players without name*
+    ```
+    {
+            "newData":{
+                "email": "anonim1@gmail.com",
+                "password": "asdfsdGAD"
+            }
+    }
+    ```
