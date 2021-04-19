@@ -18,7 +18,8 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
 
     - **POST /players**:
         adds a new player
-        - *Request Body for players with name*
+    
+    *Request Body for players with name*
     ```
     {
             "newData":{
@@ -29,7 +30,7 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
     }
     ```
 
-        - *Request Body for players without name*
+    *Request Body for players without name*
     ```
     {
             "newData":{
