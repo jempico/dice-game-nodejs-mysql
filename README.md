@@ -64,4 +64,11 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
     - **GET /players/:id**:
         reads player by id
 
+    - **GET /players/ranking**:
+        reads ranking and overall success rate
 
+    - **GET /players/ranking/loser**:
+        reads player with lowest success rate
+
+     - **GET /players/ranking/winner**:
+        reads player with highest success rate
