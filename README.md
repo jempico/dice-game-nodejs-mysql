@@ -28,7 +28,7 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
             "newData":{
                 "name": "Laia",
                 "email": "laia@gmail.com",
-                "password": "asdfsdGAD"
+                "password": "uniquepassword"
             }
     }
     ```
@@ -37,8 +37,8 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
     ```
     {
             "newData":{
-                "email": "anonim1@gmail.com",
-                "password": "asdfsdGAD"
+                "email": "anonim@mail.com",
+                "password": "uniquepassword"
             }
     }
     ```
@@ -49,10 +49,12 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
     *Request Body for updating name*
     ```
     {
-            "newData":{
-                "name": "currentName",
-                "newName": "newNameToBeChanged"
-            }
+        "currentData": {
+            "name": "currentName"
+        },
+        "newData":{
+            "name": "newName"
+        }
     }
     ```
 

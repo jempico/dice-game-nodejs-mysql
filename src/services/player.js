@@ -1,113 +1,31 @@
-const bcrypt = require('bcrypt');
-const uniqid = require('uniqid');
-const player = require('../models/player');
-const ranking = require('../models/ranking');
+const { default: knex } = require('knex');
+const db = require('../config/dbconfig');
 
-
-// CREATE NEW PLAYER
-const addPlayer = (req, res)=>{
-    const playerDTO = ({name , email ,password} = req.body.newData)
-    //Hashing password
-    playerDTO.password = bcrypt.hashSync(password, 10);
-    //Checking if name is null or empty
-    if (name == null || name == '') {
-        playerDTO.name = uniqid('ANONIM-');
-    } 
-    //Creating an instance of Player through playerFactory
-    const newPlayer = player.playerFactory(playerDTO);
-    //Adding new player into DB through data access layer
-    let result = player.addPlayer( newPlayer,
-        (response) => {
-               //Adding player to ranking
-                ranking.addPlayer(response,
-                (response) => {
-                    res.json({
-                        success: true,
-                        text: `user with id ${response} successfully created!`
-                    })
-                },     
-                (reject) => {
-                    res.json({
-                        success: false,
-                        err: reject
-                    })
-                })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
-
-    
-
-};
-
-// READ ONE PLAYER
-const readPlayer = (req, res) => {
-    const {id} = req.params;
-    let result = player.getPlayer(id,  
-        (response) => {
-            if (response.length == 0){
-                res.json({
-                    success: false,
-                    data: 'this user does not exist'
-                })
-                console.log(req.params)
-
-            } else {
-                res.json({
-                    success: true,
-                    data: response
-                })                
-            }
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
+const addPlayer = (obj, response, reject)=>{
+   db('player').insert(obj)
+   .then( (rows) =>  response(rows) )
+   .catch( (error) => reject(error))
+} 
+const getPlayer = (id, response, reject) => {
+   db.select('name', 'email', 'successRate').from('player').where('id', id)
+  .then( (rows) =>  response(rows) )
+  .catch( (error) => reject(error) )
+}
+const getPlayers = (response, reject) => {
+   db.select('*').from('player')
+  .then( function(rows) { return response(rows) })
+  .catch( function(error) { return reject(error)})
+}
+const editName = (obj, response, reject) => {
+   db('player').where('name', '=', obj.name).update({name: obj.newName })
+   .then( function(rows) { return response(rows) })
+   .catch( function(error) { return reject(error)})
 }
 
-
-// MODIFY PLAYER'S NAME
-const editPlayer = (req, res)=>{
-    const playerDTO = ({name , newName} = req.body.newData)
-    
-    //Modifying player's name through data access layer
-    let result = player.editName( playerDTO,
-        (response) => {
-            res.json({
-                success: true,
-                text: `user name successfully modified!`
-            })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
-};
-
-// READ PLAYERS
-const readPlayers = (req, res) => {
-    let result = player.getPlayers( 
-        (response) => {
-            res.json({
-                success: true,
-                data: response
-            })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
-    };
-
-
-module.exports = {addPlayer, editPlayer, readPlayer, readPlayers};
+const setSuccess = (id, response, reject) => {
+let scoreRate = db('game').select(db.raw('ROUND(AVG(score),2)')).where({id_player: id}) 
+   db('player').where('id', id).update({successRate: scoreRate})
+   .then( function(rows) {    return response(rows) })
+   .catch( function(error) { return reject(error)})
+}
+module.exports = {addPlayer, getPlayer, getPlayers, editName, setSuccess};

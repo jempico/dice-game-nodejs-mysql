@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const player = require('../../services/player');
-const game = require('../../services/game')
-const ranking = require('../../services/ranking')
+const player = require('../controllers/player');
+const game = require('../controllers/game')
+const ranking = require('../controllers/ranking')
 
 //const player = require('../controllers/singleplayer');
 //const updateplayer = require('../controllers/updateplayer');

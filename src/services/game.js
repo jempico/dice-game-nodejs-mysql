@@ -1,125 +1,22 @@
-const game = require('../models/game');
-const player = require('../models/player');
-const ranking = require('../models/ranking')
-// ADD NEW GAME
+const { default: knex } = require('knex');
+const db = require('../config/dbconfig');
 
-const addGame = (req, res)=>{
-    const {id} = req.params;
-     
-    //Creating an instance of Game through gameFactory
-    const newGame = game.gameFactory(id);
-    //Running game
-    newGame.runGame();
-    //Setting up score
-    newGame.setScore();
+const addGame = (obj, response, reject)=>{
+   db('game').insert(obj)
+   .then( (rows) =>  response(rows) )
+   .catch( (error) => reject(error))
+} 
 
-    let result = game.addGame( newGame,
-        (response) => {
-            //Settinp up player's SuccessRate
-            player.setSuccess(id,
-                (response) => {
-                        //Updating Ranking
-                        ranking.updateRanking(id, 
-                            (response) => {
-                                res.json({
-                                    success: true,
-                                    text: `Game succesfully created, success rate and ranking updated`
-                                })
-                            },     
-                            (reject) => {
-                                res.json({
-                                    success: false,
-                                    err: reject
-                                })
-                            })
-                },     
-                (reject) => {
-                    res.json({
-                        success: false,
-                        err: reject
-                    })
-                })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
-    
-    
-
-
-
-
-};
-
-
-const readGames = (req, res) => {
-    const {id} = req.params;
-    let result = game.getGames(id, 
-        (response) => {
-            if (response.length == 0){
-                res.json({
-                    success: false,
-                    data: `this user doesn't have any game record yet!`
-                })
-            } else {
-                res.json({
-                    success: true,
-                    data: response
-                })                
-            }
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
+const getGames = (id, response, reject) => {
+   db.select('id as round', 'dice1', 'dice2', 'result').from('game').where('id_player', id)
+  .then( function(rows) { return response(rows) })
+  .catch( function(error) { return reject(error)})
 }
 
-//DELETE GAME
-const deleteGames = (req, res)=>{
-    const {id} = req.params;
-    
-    //Removing games through data access layer
-    let result = game.removeGames(id,
-        (response) => {
-              //Setting back successRate to 0
-              player.setSuccess(id,
-                (response) => {
-                        //Updating Ranking
-                        ranking.updateRanking(id, 
-                            (response) => {
-                                res.json({
-                                    success: true,
-                                    text: `Games succesfully removed, success rate and ranking updated`
-                                })
-                            },     
-                            (reject) => {
-                                res.json({
-                                    success: false,
-                                    err: reject
-                                })
-                            })
-                },     
-                (reject) => {
-                    res.json({
-                        success: false,
-                        err: reject
-                    })
-                })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
+const removeGames = (id, response, reject) => {
+   db('game').where({'id_player': id}).del()
+  .then( function(rows) { return response(rows) })
+  .catch( function(error) { return reject(error)})
+}
 
-
-
-};
-
-module.exports = {addGame, readGames, deleteGames};
+module.exports = {addGame, getGames, removeGames};

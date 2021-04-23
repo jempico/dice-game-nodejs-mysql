@@ -1,78 +1,39 @@
-const ranking = require('../models/ranking');
+const db = require('../config/dbconfig');
 
-// READ PLAYERS
-const readPlayers = (req, res) => {
-    let result = ranking.getPlayers( 
-        (response) => 
-            { 
-            for (obj of response) {
-                if (obj.hasOwnProperty('successRate')) {
-                    
-                    let result2 = ranking.getTotalAverage( 
-                        (response2) => {
-                            for (prop of response2){
-                            response2 = Number(prop[Object.getOwnPropertyNames(prop)].toFixed(2));
-                            }
-                            res.json({
-                                success: true,
-                                overall_successRate: response2,
-                                data: response
-                            })
-                        },     
-                        (reject) => {
-                            res.json({
-                                success: false,
-                                err: reject
-                            })
-                        })
-                
-                } else {
-                    res.json({
-                    success: true,
-                    data: response
-                    })
-                }
-            }
-            }, 
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
-    };
+class RankingService {
+    addPlayer(id, response, reject) {
+        db('ranking').insert({id_player: id})
+        .then( (rows) =>  response(rows) )
+        .catch( (error) => reject(error))
+    }
+    updateRanking(id, response, reject) {
+        let successDTO = db.select('successRate').from('player').where('id', id)
+        db('ranking').where('id_player', '=', id).update({successRate: successDTO })
+        .then( (rows) =>  response(rows)) 
+        .catch( (error) => reject(error))
+    }
+    getLoser(response, reject) {
+        db.select('id_player', 'successRate').from('ranking').where('successRate', '=', 0)
+       .then( function(rows) { return response(rows) })
+       .catch( function(error) { return reject(error)})
+     }
+    getWinner(response, reject) {
+        let maxSuccess = db('ranking').max('successRate');
+        db.select('id_player', 'successRate').from('ranking').where({successRate: maxSuccess})
+       .then( function(rows) { return response(rows) })
+       .catch( function(error) { return reject(error)})
+     }
+    getPlayers(response, reject) {
+        db.select('id_player', 'successRate').from('ranking')
+       .then( function(rows) { return response(rows) })
+       .catch( function(error) { return reject(error)})
+    }
+    getTotalAverage(response, reject) {
+         db('ranking').avg('successRate')
+       .then( function(rows) { return response(rows) })
+       .catch( function(error) { return reject(error)})
+    }
+}
 
-const readLoser = (req, res) => {
-        let result = ranking.getLoser( 
-            (response) => {
-                res.json({
-                    success: true,
-                    data: response
-                })
-            },     
-            (reject) => {
-                res.json({
-                    success: false,
-                    err: reject
-                })
-            })
-        };
-    
-const readWinner = (req, res) => {
-        let result = ranking.getWinner( 
-            (response) => {
-                res.json({
-                    success: true,
-                    data: response
-                })
-            },     
-            (reject) => {
-                res.json({
-                    success: false,
-                    err: reject
-                })
-            })
-        };
-    
 
-module.exports = {readPlayers, readLoser, readWinner}
+module.exports = new RankingService();
