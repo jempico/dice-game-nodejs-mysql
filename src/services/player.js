@@ -1,31 +1,38 @@
-const { default: knex } = require('knex');
 const db = require('../config/dbconfig');
+const PlayerModel = require('../models/player');
 
-const addPlayer = (obj, response, reject)=>{
-   db('player').insert(obj)
-   .then( (rows) =>  response(rows) )
-   .catch( (error) => reject(error))
-} 
-const getPlayer = (id, response, reject) => {
-   db.select('name', 'email', 'successRate').from('player').where('id', id)
-  .then( (rows) =>  response(rows) )
-  .catch( (error) => reject(error) )
-}
-const getPlayers = (response, reject) => {
-   db.select('*').from('player')
-  .then( function(rows) { return response(rows) })
-  .catch( function(error) { return reject(error)})
-}
-const editName = (obj, response, reject) => {
-   db('player').where('name', '=', obj.name).update({name: obj.newName })
-   .then( function(rows) { return response(rows) })
-   .catch( function(error) { return reject(error)})
+
+class PlayerService {
+    async createPlayer(obj){
+        let result = PlayerModel.create(obj)
+        return result;
+        }    
+    async addPlayer(obj){
+        let result = await db('player').insert(obj)
+        return result;
+        }
+    async getPlayer(id){
+        let result = await db.select('name', 'email', 'successRate').from('player').where('id', id)
+        return result;
+        }
+    async editName(obj){
+        let result = await db('player').where('name', '=', obj.name).update({name: obj.newName })
+        return result;
+        }
+    async getPlayers(){
+        let result = db.select('*').from('player')
+        return result;
+        }
+    async setSuccess(id){
+        let scoreRate = db('game').select(db.raw('ROUND(AVG(score),2)')).where({id_player: id}) 
+        let result = db('player').where('id', id).update({successRate: scoreRate})
+        return result;
+        }
+    async resetSuccess(id){
+        let result = db('player').where('id', id).update({successRate: null})
+        return result;
+        }
 }
 
-const setSuccess = (id, response, reject) => {
-let scoreRate = db('game').select(db.raw('ROUND(AVG(score),2)')).where({id_player: id}) 
-   db('player').where('id', id).update({successRate: scoreRate})
-   .then( function(rows) {    return response(rows) })
-   .catch( function(error) { return reject(error)})
-}
-module.exports = {addPlayer, getPlayer, getPlayers, editName, setSuccess};
+
+module.exports = new PlayerService();

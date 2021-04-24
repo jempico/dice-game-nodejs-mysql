@@ -1,78 +1,37 @@
 const ranking = require('../../services/ranking');
 
+class RankingController {
+
 // READ PLAYERS
-const readPlayers = (req, res) => {
-    let result = ranking.getPlayers( 
-        (response) => 
-            { 
-            for (obj of response) {
-                if (obj.hasOwnProperty('successRate')) {
-                    
-                    let result2 = ranking.getTotalAverage( 
-                        (response2) => {
-                            for (prop of response2){
-                            response2 = Number(prop[Object.getOwnPropertyNames(prop)].toFixed(2));
-                            }
-                            res.json({
-                                success: true,
-                                overall_successRate: response2,
-                                data: response
-                            })
-                        },     
-                        (reject) => {
-                            res.json({
-                                success: false,
-                                err: reject
-                            })
-                        })
-                
-                } else {
-                    res.json({
-                    success: true,
-                    data: response
-                    })
-                }
-            }
-            }, 
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
-    };
+    async readPlayers(req, res) {
+        try {
+            const rankedPlayers = await ranking.getPlayers()
+            const totalAverage = await ranking.getTotalAverage()
+            res.status(200).json({ success: true, overall_successRate: totalAverage, ranking: rankedPlayers })
+        } catch(err) {
+            res.status(400).json({ success: false, error: err})}
+    }
 
-const readLoser = (req, res) => {
-        let result = ranking.getLoser( 
-            (response) => {
-                res.json({
-                    success: true,
-                    data: response
-                })
-            },     
-            (reject) => {
-                res.json({
-                    success: false,
-                    err: reject
-                })
-            })
-        };
-    
-const readWinner = (req, res) => {
-        let result = ranking.getWinner( 
-            (response) => {
-                res.json({
-                    success: true,
-                    data: response
-                })
-            },     
-            (reject) => {
-                res.json({
-                    success: false,
-                    err: reject
-                })
-            })
-        };
+// READ PLAYER WITH LOWEST SUCCESS RATE
+    async readLoser(req, res) {
+        try {
+            const loser = await ranking.getLoser() 
+            res.status(200).json({ success: true, data: loser })
+        } catch(err) {
+            res.status(400).json({ success: false, error: err})
+        }
+    }
+
+// READ PLAYER WITH HIGHEST SUCCESS RATE
+    async readWinner(req, res) {
+        try {
+            const winner = await ranking.getWinner() 
+            res.status(200).json({ success: true, data: winner })
+        } catch(err) {
+            res.status(400).json({ success: false, error: err})
+        }
+    }
+}
     
 
-module.exports = {readPlayers, readLoser, readWinner}
+module.exports = new RankingController()

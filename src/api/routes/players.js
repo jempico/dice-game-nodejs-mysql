@@ -4,11 +4,6 @@ const player = require('../controllers/player');
 const game = require('../controllers/game')
 const ranking = require('../controllers/ranking')
 
-//const player = require('../controllers/singleplayer');
-//const updateplayer = require('../controllers/updateplayer');
-//const deleteplayer = require('../controllers/deleteplayer');
-//const addgame = require('../controllers/addgame');
-
 router
     .route("/")
     .get(player.readPlayers)

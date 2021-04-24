@@ -1,116 +1,85 @@
-const bcrypt = require('bcrypt');
-const uniqid = require('uniqid');
 const player = require('../../services/player');
 const ranking = require('../../services/ranking');
-const playerFactory = require('../../models/player');
 
-// CREATE NEW PLAYER
-const addPlayer = (req, res)=>{
-    const playerDTO = ({name , email ,password} = req.body.newData)
-    //Hashing password
-    playerDTO.password = bcrypt.hashSync(password, 10);
-    //Checking if name is null or empty
-    if (name == null || name == '') {
-        playerDTO.name = uniqid('ANONIM-');
-    } 
-    //Creating an instance of Player through playerFactory
-    const newPlayer = playerFactory.create(playerDTO);
-    //Adding new player into DB through data access layer
-    let result = player.addPlayer( newPlayer,
-        (response) => {
-               //Adding player to ranking
-                ranking.addPlayer(response,
-                (response) => {
-                    res.json({
-                        success: true,
-                        text: `user with id ${response} successfully created!`
-                    })
-                },     
-                (reject) => {
-                    res.json({
-                        success: false,
-                        err: reject
-                    })
-                })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
+class playerController { 
+
+//CREATE PLAYER
+    async addPlayer(req, res){
+        try {
+        const playerDTO = {
+            name: req.body.newData.name, 
+            email: req.body.newData.email, 
+            password: req.body.newData.password 
+        } 
+        const newPlayer = await player.createPlayer(playerDTO)
+        const playerId = await player.addPlayer(newPlayer)
+        const playerRankedId = await ranking.addPlayer(playerId)   
+
+        res.status(200).json({
+            success: true,
+            text: `user  with id ${playerRankedId} created and added to ranking!`
             })
-        })
-
+        } 
+        catch(err) {
+            res.status(400).json({ success: false, error: err})}
+        }  
     
-
-};
-
+    
 // READ ONE PLAYER
-const readPlayer = (req, res) => {
-    const {id} = req.params;
-    let result = player.getPlayer(id,  
-        (response) => {
-            if (response.length == 0){
-                res.json({
-                    success: false,
-                    data: 'this user does not exist'
-                })
-                console.log(req.params)
-
-            } else {
-                res.json({
-                    success: true,
-                    data: response
-                })                
-            }
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
-}
-
-
-// MODIFY PLAYER'S NAME
-const editPlayer = (req, res)=>{
-    const playerDTO = {
-        name: req.body.currentData.name,
-        newName: req.body.newData.name
-    }
+    async readPlayer(req, res) {
+        try{
+        const {id} = req.params;
+        let foundPlayer = await player.getPlayer(id)
+        if (foundPlayer == 0){
+            res.status(400).json({ success: false, data: 'this user does not exist'})
+        } else {
+            res.status(200).json({ success: true, data: foundPlayer })                
+        }}  
+        catch(err) {
+            res.status(400).json({ success: false, error: err }) }
+        }  
     
-    //Modifying player's name through data access layer
-    let result = player.editName( playerDTO,
-        (response) => {
-            res.json({
+    
+    // MODIFY PLAYER'S NAME
+   async editPlayer(req, res){
+        try{
+        const playerDTO = {
+            name: req.body.currentData.name,
+            newName: req.body.newData.name
+        }
+        let result = await player.editName(playerDTO)
+        if (result == 1) {  
+            res.status(200).json({
                 success: true,
                 text: `user name successfully modified!`
             })
-        },     
-        (reject) => {
-            res.json({
+        } else if (result ==0) {
+            res.status(400).json({
                 success: false,
-                err: reject
-            })
-        })
-};
-
-// READ PLAYERS
-const readPlayers = (req, res) => {
-    let result = player.getPlayers( 
-        (response) => {
-            res.json({
+                text: `Check fields, name couldn't be modified :(`
+            }) 
+        }}  
+        catch(err) {
+            res.status(400).json({ success: false, error: err }) }
+        }  
+    
+    
+// READ ALL PLAYERS
+    async readPlayers(req, res) {
+        try{
+        let playersList = await player.getPlayers()
+        if (playersList.length == 0) {
+            res.status(200).json({
                 success: true,
-                data: response
-            })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
-    };
+                players: 'There is no player registered yet!'
+            }) 
+        } else if (playersList.length > 0) {         
+            res.status(200).json({ success: true, players: playersList })
+        }}  
+        catch(err) {
+            res.status(400).json({ success: false, error: err }) }
+        }  
+} 
 
 
-module.exports = {addPlayer, editPlayer, readPlayer, readPlayers};
+module.exports = new playerController()

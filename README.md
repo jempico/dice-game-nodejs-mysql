@@ -5,11 +5,11 @@ A REST API that can create, read, update and delete data (CRUD OPERATIONS) on My
 2. Add environment variables: edit or create and `.env` file in the root directory with the following data:
 
      ```
-     DB_HOST= <change for local host name, usually 'localhost'>
+     DB_HOST= localhost
      DB_USER= <change for local user name, usually 'root'>
-     DB_PASS= <change for local password>
-     DB_NAME= "dicegame"`
-     PORT="3000"
+     DB_PASS= <change for password>
+     DB_NAME= dicegame
+     PORT= 3000
      ``` 
      
      

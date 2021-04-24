@@ -1,127 +1,62 @@
 const game = require('../../services/game');
 const player = require('../../services/player');
 const ranking = require('../../services/ranking');
-const gameFactory = require('../../models/game');
+
+class GameController { 
 
 // ADD NEW GAME
-
-const addGame = (req, res)=>{
-    const {id} = req.params;
-     
-    //Creating an instance of Game through gameFactory
-    const newGame = gameFactory.create(id);
-    //Running game
-    newGame.runGame();
-    //Setting up score
-    newGame.setScore();
-
-    let result = game.addGame( newGame,
-        (response) => {
-            //Settinp up player's SuccessRate
-            player.setSuccess(id,
-                (response) => {
-                        //Updating Ranking
-                        ranking.updateRanking(id, 
-                            (response) => {
-                                res.json({
-                                    success: true,
-                                    text: `Game succesfully created, success rate and ranking updated`
-                                })
-                            },     
-                            (reject) => {
-                                res.json({
-                                    success: false,
-                                    err: reject
-                                })
-                            })
-                },     
-                (reject) => {
-                    res.json({
-                        success: false,
-                        err: reject
-                    })
-                })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
-    
-    
-
-
-
-
-};
-
-
-const readGames = (req, res) => {
-    const {id} = req.params;
-    let result = game.getGames(id, 
-        (response) => {
-            if (response.length == 0){
-                res.json({
-                    success: false,
-                    data: `this user doesn't have any game record yet!`
-                })
-            } else {
-                res.json({
-                    success: true,
-                    data: response
-                })                
+    async addGame(req, res) {
+    try {
+        const {id} = req.params;
+        const newGame = await game.createGame(id);
+        const gameId = await game.addGame(newGame)
+        const succesSet = await player.setSuccess(id)
+        if (succesSet == 1) { 
+            const rankingUpdated = await ranking.updateRanking(id);
+            res.status(200).json({
+                success: true,
+                text: `Game with id ${gameId} succesfully created and success rate and ranking updated!`})
+        } else if (succesSet == 0) {
+                res.status(400).json({ success: false, error: `Check fields. Game couldn't be added` })
             }
-        },     
-        (reject) => {
-            res.json({
+        } catch(err) {
+                res.status(400).json({ success: false, error: err }) }
+    }  
+
+// READ ALL GAMES
+    async readGames(req, res) {
+    try {
+        const {id} = req.params;
+        let gameFound = await game.getGames(id)
+        if (gameFound.length == 0) {
+            res.status(400).json({
                 success: false,
-                err: reject
-            })
-        })
+                data: `this user doesn't exist or doesn't have any game record yet!` })
+        } else if (gameFound.length > 0){
+                res.status(200).json({ success: true, data: gameFound })   
+        }
+    } catch(err){
+                res.status(400).json({ success: false, error: err })
+    } 
 }
 
-//DELETE GAME
-const deleteGames = (req, res)=>{
-    const {id} = req.params;
-    
-    //Removing games through data access layer
-    let result = game.removeGames(id,
-        (response) => {
-              //Setting back successRate to 0
-              player.setSuccess(id,
-                (response) => {
-                        //Updating Ranking
-                        ranking.updateRanking(id, 
-                            (response) => {
-                                res.json({
-                                    success: true,
-                                    text: `Games succesfully removed, success rate and ranking updated`
-                                })
-                            },     
-                            (reject) => {
-                                res.json({
-                                    success: false,
-                                    err: reject
-                                })
-                            })
-                },     
-                (reject) => {
-                    res.json({
-                        success: false,
-                        err: reject
-                    })
-                })
-        },     
-        (reject) => {
-            res.json({
-                success: false,
-                err: reject
-            })
-        })
+//DELETE ALL GAMES
+    async deleteGames(req, res){
+    try {
+        const {id} = req.params;
+        let foundPlayer = await player.getPlayer(id)
+        if (foundPlayer == 0){
+            res.status(400).json({ success: false, data: 'this user does not exist'})
+        }  
+        let removedGames = await game.removeGames(id)
+        let successReset = await player.resetSuccess(id)
+        let rankingUpdated = await ranking.updateRanking(id)
+        res.status(200).json({ success: true, data: `Games succesfully removed and success rate and ranking updated` })   
+    } catch(err) {
+        res.status(400).json({ success: false, error: err })
+    }
+}
+} 
 
 
-
-};
-
-module.exports = {addGame, readGames, deleteGames};
+module.exports = new GameController()

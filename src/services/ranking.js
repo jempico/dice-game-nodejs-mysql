@@ -1,39 +1,37 @@
 const db = require('../config/dbconfig');
 
+
 class RankingService {
-    addPlayer(id, response, reject) {
-        db('ranking').insert({id_player: id})
-        .then( (rows) =>  response(rows) )
-        .catch( (error) => reject(error))
-    }
-    updateRanking(id, response, reject) {
+    async addPlayer(id){
+        let result = await db('ranking').insert({id_player: id})
+        return result;
+        } 
+    async updateRanking(id) {
         let successDTO = db.select('successRate').from('player').where('id', id)
-        db('ranking').where('id_player', '=', id).update({successRate: successDTO })
-        .then( (rows) =>  response(rows)) 
-        .catch( (error) => reject(error))
+        let result = await db('ranking').where('id_player', '=', id).update({successRate: successDTO })
+        return result;
     }
-    getLoser(response, reject) {
-        db.select('id_player', 'successRate').from('ranking').where('successRate', '=', 0)
-       .then( function(rows) { return response(rows) })
-       .catch( function(error) { return reject(error)})
-     }
-    getWinner(response, reject) {
+    async getLoser() {
+        let minSuccess = db('ranking').min('successRate');
+        let result = await db.select('id_player', 'successRate').from('ranking').where({successRate: minSuccess})
+        return result;
+    }
+    async getWinner() {
         let maxSuccess = db('ranking').max('successRate');
-        db.select('id_player', 'successRate').from('ranking').where({successRate: maxSuccess})
-       .then( function(rows) { return response(rows) })
-       .catch( function(error) { return reject(error)})
-     }
-    getPlayers(response, reject) {
-        db.select('id_player', 'successRate').from('ranking')
-       .then( function(rows) { return response(rows) })
-       .catch( function(error) { return reject(error)})
+        let result = await db.select('id_player', 'successRate').from('ranking').where({successRate: maxSuccess})
+        return result;
     }
-    getTotalAverage(response, reject) {
-         db('ranking').avg('successRate')
-       .then( function(rows) { return response(rows) })
-       .catch( function(error) { return reject(error)})
+    async getPlayers() {
+        let result = await db.select('id_player', 'successRate').from('ranking')
+        return result;
+    }
+    async getTotalAverage() {
+        let query = 'ROUND(AVG(successRate),2) AS total';
+        let result = await db('ranking').select(db.raw(query))
+        return result;
     }
 }
+
 
 
 module.exports = new RankingService();
