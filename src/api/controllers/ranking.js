@@ -1,8 +1,7 @@
 const ranking = require('../../services/ranking');
 
 class RankingController {
-
-// READ PLAYERS
+    // READ PLAYERS
     async readPlayers(req, res) {
         try {
             const rankedPlayers = await ranking.getPlayers()
@@ -12,7 +11,7 @@ class RankingController {
             res.status(400).json({ success: false, error: err})}
     }
 
-// READ PLAYER WITH LOWEST SUCCESS RATE
+    // READ PLAYER WITH LOWEST SUCCESS RATE
     async readLoser(req, res) {
         try {
             const loser = await ranking.getLoser() 
@@ -22,7 +21,7 @@ class RankingController {
         }
     }
 
-// READ PLAYER WITH HIGHEST SUCCESS RATE
+    // READ PLAYER WITH HIGHEST SUCCESS RATE
     async readWinner(req, res) {
         try {
             const winner = await ranking.getWinner() 

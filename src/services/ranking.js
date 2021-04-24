@@ -5,7 +5,7 @@ class RankingService {
     async addPlayer(id){
         let result = await db('ranking').insert({id_player: id})
         return result;
-        } 
+    } 
     async updateRanking(id) {
         let successDTO = db.select('successRate').from('player').where('id', id)
         let result = await db('ranking').where('id_player', '=', id).update({successRate: successDTO })
