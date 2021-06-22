@@ -1,5 +1,10 @@
 A REST API that can create, read, update and delete data (CRUD OPERATIONS) on MySQL.
 
+## SQL Schema:
+<img width="752" alt="Screenshot 2021-06-22 at 08 25 18" src="https://user-images.githubusercontent.com/25463174/122874790-b47fcf80-d333-11eb-9f0d-b3e1be4a6bcd.png">
+
+
+
 ## Installation:
 1. Run SQL file (`dicegame_restapi.sql` which is located in `src > scripts` folder) locally. You can use MySQL Workbench for this purpose. This will create a database called "dicegame".
 2. Add environment variables: edit or create and `.env` file in the root directory with the following data:
